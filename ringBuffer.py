@@ -13,13 +13,15 @@ class RingBuffer:
         self.read_cursor = 0
 
     def full(self):
+        ''' check if buffer is full '''
         return self.write_cursor==((self.read_cursor-self.itemSize)%self.totalSize)
 
     def empty(self):
+        ''' check if buffer is empty '''
         return self.write_cursor==self.read_cursor
 
     def check_item(self, item):
-        ''' Check item type '''
+        ''' Check item to push as proper type ad '''
 
         if not isinstance(item,(numbers.Number, list, np.ndarray)):
             raise TypeError("Accepted types: scalar, list, numpy array")
