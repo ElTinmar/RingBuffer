@@ -1,4 +1,5 @@
 import numpy as np
+import numbers
 
 class RingBuffer:
     
@@ -17,11 +18,46 @@ class RingBuffer:
     def empty(self):
         return self.write_cursor==self.read_cursor
 
+    def check_item(self, item):
+        ''' Check item type '''
+
+        if not isinstance(item,(numbers.Number, list, np.ndarray)):
+            raise TypeError("Accepted types: scalar, list, numpy array")
+        
+        if isinstance(item,numbers.Number) and self.itemSize>1:
+            raise TypeError(
+                "Expecting {0} items, got scalar".format(
+                    self.itemSize
+                    )
+                )
+        
+        if isinstance(item,list) and len(item) != self.itemSize:
+            raise TypeError(
+                "Expecting {0} items, got {1}".format(
+                    self.itemSize,
+                    len(item)
+                    )
+                )
+        
+        if isinstance(item,np.ndarray) and len(item.shape)>1:
+            raise TypeError(
+                "Expecting 1D array, got {0}D".format(
+                    len(item.shape)
+                    )
+                )
+        
+        if isinstance(item,np.ndarray) and item.shape[0] != self.itemSize:
+            raise TypeError(
+                "Expecting {0} items, got {1}".format(
+                    self.itemSize,
+                    item.shape[0]
+                    )
+                )
+
     def push(self, item):
         ''' Add item at the back '''
 
-        #TODO check that item is the right size/type other throw ValueError
-
+        self.check_item(item)
         if not self.full():
             self.data[self.write_cursor:self.write_cursor+self.itemSize] = item
             self.write_cursor = (self.write_cursor+self.itemSize)%self.totalSize
