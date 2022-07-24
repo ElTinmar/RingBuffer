@@ -12,10 +12,10 @@ class RingBuffer:
         self.read_cursor = 0
 
     def full(self):
-        return self.write_cursor == ((self.read_cursor - self.itemSize) % self.totalSize)
+        return self.write_cursor==((self.read_cursor-self.itemSize)%self.totalSize)
 
     def empty(self):
-        return self.write_cursor == self.read_cursor
+        return self.write_cursor==self.read_cursor
 
     def push(self, item):
         ''' Add item at the back '''
@@ -44,11 +44,13 @@ class RingBuffer:
         return (self.write_cursor-self.read_cursor)%self.totalSize
 
     def __repr__(self):
-        reprstr = "Ring Buffer\nRead: {0}\nWrite: {1}\nSize: {2}\nData: {3}".format(
+        reprstr = ("Ring Buffer " + "="*20 
+            + "\nRead: {0}\nWrite: {1}\nSize: {2}\nData: {3}".format(
             self.read_cursor,
             self.write_cursor,
             self.size(),
             self.data)
+        )
         return reprstr
 
 
@@ -59,6 +61,19 @@ if __name__ == '__main__':
     r.push(1)
     r.push(2)
     r.push(3)
-    r.pop()
+    ok, it = r.pop()
     r.push(4)
+    ok, it = r.pop()
+    r.push(5)
+    print(r)
+
+    r = RingBuffer(5,2)
+    r.push([1,2])
+    r.push([3,4])
+    r.push([5,6])
+    r.push([7,8])
+    ok, it = r.pop()
+    r.push([9,10])
+    ok, it = r.pop()
+    r.push([11,12])
     print(r)
